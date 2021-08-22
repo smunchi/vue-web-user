@@ -1,7 +1,8 @@
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 <template>
     <div id="login">
         <h1>Login</h1>
-        <input type="text" name="username" v-model="input.username" placeholder="Username" />
+        <input type="text" name="email" v-model="input.email" placeholder="Email" />
         <br/>
         <input type="password" name="password" v-model="input.password" placeholder="Password" />
         <br/>
@@ -17,24 +18,28 @@
         data() {
             return {
                 input: {
-                    username: "",
+                    email: "",
                     password: ""
                 }            
             }
         },
         methods: {
             login() {
-                if(this.input.username != "" && this.input.password != "") {
-                    if(this.input.username == this.$parent.mockAccount.username && this.input.password == this.$parent.mockAccount.password) {
-                        this.$emit("authenticated", true);
-                        this.$router.replace({ name: "secure" });
-                    } else {
-                        console.log("The username and / or password is incorrect");
+                    if(this.input.email != "" && this.input.password != "") {
+                            axios.post('http://127.0.0.1:8000/api/v1/auth/login', { 
+                                email:this.input.email, 
+                                password:this.input.password
+                            })
+                            .then(res => {
+                                console.log(res);
+                                this.$emit("authenticated", true);
+                                this.$router.push({name: 'dashboard'});
+                                this.$router.replace({ name: "secure" });
+                            }).catch(err => {
+                            console.log(err);
+                        })                
                     }
-                } else {
-                    console.log("A username and password must be present");
                 }
-            }
         }
     }
 </script>

@@ -1,3 +1,4 @@
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 <template>
   <div class="container">
     <div class="row justify-content-md-center">
@@ -54,8 +55,21 @@
     methods: {
       register() {
         var app = this
-        app.success = true
-        this.$router.push({name: 'login', params: {successRegistrationRedirect: true}})
+        // save data to server
+        axios.post('http://127.0.0.1:8000/api/v1/auth/register', { 
+                            name: this.name, 
+                            email:this.email,
+                            password:this.password,
+                            password_confirmation:this.password_confirmation
+
+          })
+          .then(res => {
+              console.log(res);
+              app.success = true
+              this.$router.push({name: 'login', params: {successRegistrationRedirect: true}})
+          }).catch(err => {
+          console.log(err)
+      })                   
       }
     }
   }
